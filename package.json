@@ -1,11 +1,11 @@
 {
-  "name": "emma-sdk",
+  "name": "@zaradarbh/emma-typescript-sdk",
   "version": "0.0.1",
   "description": "OpenAPI client for Emma",
   "author": "OpenAPI-Generator Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
+    "url": "https://github.com/ZaradarBH/emma-typescript-sdk.git"
   },
   "keywords": [
     "fetch",
