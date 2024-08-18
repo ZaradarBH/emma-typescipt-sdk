@@ -1,6 +1,9 @@
 {
   "name": "@zaradarbh/emma-typescript-sdk",
   "version": "0.0.1",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "OpenAPI client for Emma",
   "author": "OpenAPI-Generator Contributors",
   "repository": {
