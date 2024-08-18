@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+ 
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -37,3 +40,5 @@ jobs:
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           git tag "v$PACKAGE_VERSION"
           git push origin "v$PACKAGE_VERSION"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
