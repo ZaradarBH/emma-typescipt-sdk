@@ -4,7 +4,6 @@ import { Credentials } from '../models/Credentials';
 import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
 import { Token } from '../models/Token';
 import { RefreshToken } from '../models/RefreshToken';
-import './promiseMap';
 
 export class AuthenticationApi {
     private requestFactory: AuthenticationApiRequestFactory;
@@ -31,18 +30,18 @@ export class AuthenticationApi {
         // build promise chain
         let middlewarePre = this.requestFactory.issueToken(credentials, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.issueTokenWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -65,18 +64,18 @@ export class AuthenticationApi {
         // build promise chain
         let middlewarePre = this.requestFactory.refreshToken(refreshToken, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.refreshTokenWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
