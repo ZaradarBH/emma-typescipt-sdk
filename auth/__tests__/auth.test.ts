@@ -1,6 +1,5 @@
 import { BearerAuthAuthentication, configureAuthMethods, TokenProvider, AuthMethodsConfiguration } from '../auth';
-import {HttpMethod, RequestContext} from '../../http/http';
-
+import { HttpMethod, RequestContext } from '../../http/http';
 
 class MockTokenProvider implements TokenProvider {
     private token: string;
@@ -35,7 +34,7 @@ describe('configureAuthMethods', () => {
     it('should configure auth methods correctly', () => {
         const tokenProvider = new MockTokenProvider('test-token');
         const config: AuthMethodsConfiguration = {
-            bearerAuth: { tokenProvider }
+            bearerAuth: { tokenProvider },
         };
 
         const authMethods = configureAuthMethods(config);
@@ -50,7 +49,7 @@ describe('configureAuthMethods', () => {
     it('should configure default auth method if provided', () => {
         const defaultAuth = new BearerAuthAuthentication(new MockTokenProvider('default-token'));
         const config: AuthMethodsConfiguration = {
-            default: defaultAuth
+            default: defaultAuth,
         };
 
         const authMethods = configureAuthMethods(config);
