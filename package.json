@@ -1,45 +1,36 @@
 {
   "name": "@zaradarbh/emma-typescript-sdk",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publishConfig": {
     "access": "public"
   },
   "description": "OpenAPI client for Emma",
   "author": "OpenAPI-Generator Contributors",
+  "license": "Unlicense",
   "repository": {
     "type": "git",
     "url": "https://github.com/ZaradarBH/emma-typescript-sdk.git"
   },
   "keywords": [
-    "fetch",
+    "node",
     "typescript",
     "openapi-client",
     "openapi-generator"
   ],
-  "license": "Unlicense",
-  "main": "./dist/index.js",
-  "type": "commonjs",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.js"
+    "main": "dist/api.js",
+    "types": "dist/api.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "npm run build && node dist/api.js"
+    },
+    "dependencies": {
+        "bluebird": "^3.7.2",
+        "request": "^2.88.2"
+    },
+    "devDependencies": {
+        "@types/bluebird": "^3.5.33",
+        "@types/node": "^12",
+        "@types/request": "^2.48.8",
+        "typescript": "^4.0 || ^5.0"
     }
-  },
-  "files": [
-    "dist"
-  ],
-  "typings": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build"
-  },
-  "dependencies": {
-    "whatwg-fetch": "^3.0.0",
-    "es6-promise": "^4.2.4",
-    "url-parse": "^1.4.3"
-  },
-  "devDependencies": {
-    "typescript": "^4.0",
-    "@types/url-parse": "1.4.4"
-  }
 }
