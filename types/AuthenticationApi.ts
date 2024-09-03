@@ -1,7 +1,7 @@
 import { AuthenticationApiRequestFactory, AuthenticationApiResponseProcessor } from '../apis/AuthenticationApi';
 import { Configuration } from '../configuration';
 import { Credentials } from '../models/Credentials';
-import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
+import { HttpInfo } from '../http/http';
 import { Token } from '../models/Token';
 import { RefreshToken } from '../models/RefreshToken';
 
@@ -35,10 +35,10 @@ export class AuthenticationApi {
 
         return middlewarePre
             .then((ctx) => this.configuration.httpApi.send(ctx))
-            .then((response: ResponseContext) => {
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.issueTokenWithHttpInfo(rsp));
             });
@@ -64,15 +64,15 @@ export class AuthenticationApi {
         // build promise chain
         let middlewarePre = this.requestFactory.refreshToken(refreshToken, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
         return middlewarePre
-            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
-            .then((response: ResponseContext) => {
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.refreshTokenWithHttpInfo(rsp));
             });
