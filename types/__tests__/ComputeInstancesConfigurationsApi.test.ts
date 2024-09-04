@@ -4,11 +4,12 @@ import { IsomorphicFetchHttpLibrary } from '../../http/isomorphic-fetch';
 import { ResponseContext } from '../../http/http';
 
 describe('ComputeInstancesConfigurationsApi', () => {
-    let api: ComputeInstancesConfigurationsApi;
+    const api = new ComputeInstancesConfigurationsApi(createConfiguration());
     const testBody = JSON.stringify({ totalPages: 32 });
 
-    beforeAll(() => {
-        api = new ComputeInstancesConfigurationsApi(createConfiguration());
+    beforeEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
 
         jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
             const headers = { 'content-type': 'application/json' };

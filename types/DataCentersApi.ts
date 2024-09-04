@@ -2,7 +2,6 @@ import { DataCentersApiRequestFactory, DataCentersApiResponseProcessor } from '.
 import { Configuration } from '../configuration';
 import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
 import { DataCenter } from '../models/DataCenter';
-import './promiseMap';
 
 export class DataCentersApi {
     private requestFactory: DataCentersApiRequestFactory;
@@ -29,18 +28,18 @@ export class DataCentersApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getDataCenter(dataCenterId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getDataCenterWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -70,18 +69,18 @@ export class DataCentersApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getDataCenters(dataCenterName, locationId, providerName, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getDataCentersWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
