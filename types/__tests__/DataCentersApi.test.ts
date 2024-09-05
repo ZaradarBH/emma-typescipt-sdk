@@ -3,6 +3,7 @@ import { createConfiguration } from '../../configuration';
 import { DataCenter } from '../../models/DataCenter';
 import { IsomorphicFetchHttpLibrary } from '../../http/isomorphic-fetch';
 import { ResponseContext } from '../../http/http';
+import { testMiddleware, buildResponseBody, testApiHttpInfo } from './utils';
 
 describe('DataCentersApi', () => {
     const api = new DataCentersApi(createConfiguration());
@@ -19,11 +20,7 @@ describe('DataCentersApi', () => {
 
         jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
             const headers = { 'content-type': 'application/json' };
-            const body = {
-                text: () => Promise.resolve(JSON.stringify(mockDataCenter)),
-                binary: () => Promise.resolve(new Blob()),
-            };
-            return Promise.resolve(new ResponseContext(200, headers, body));
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(mockDataCenter)));
         });
     });
 
@@ -33,10 +30,7 @@ describe('DataCentersApi', () => {
     });
 
     test('should get data center with http info', async () => {
-        const response = await api.getDataCenterWithHttpInfo(dataCenterId);
-        expect(response.httpStatusCode).toBe(200);
-        const bodyText = await response.body.text();
-        expect(bodyText).toEqual(JSON.stringify(mockDataCenter));
+        await testApiHttpInfo(() => api.getDataCenterWithHttpInfo(dataCenterId), mockDataCenter);
     });
 
     it('should handle error in get data center', async () => {
@@ -75,20 +69,16 @@ describe('DataCentersApi', () => {
             { id: 'dc-123', name: 'Test Data Center 1', providerName: 'Test Provider', locationName: 'Test Location' },
             { id: 'dc-456', name: 'Test Data Center 2', providerName: 'Test Provider', locationName: 'Test Location' },
         ];
-        const response = await getDataCenters(mockDataCenters, () => api.getDataCentersWithHttpInfo());
-        expect(response.httpStatusCode).toBe(200);
-        const bodyText = await response.body.text();
-        expect(bodyText).toEqual(JSON.stringify(mockDataCenters));
+        await testApiHttpInfo(
+            () => getDataCenters(mockDataCenters, () => api.getDataCentersWithHttpInfo()),
+            mockDataCenters
+        );
     });
 
     async function getDataCenters(mockDataCenters: DataCenter[], getFunction: Function) {
         jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementationOnce(() => {
             const headers = { 'content-type': 'application/json' };
-            const body = {
-                text: () => Promise.resolve(JSON.stringify(mockDataCenters)),
-                binary: () => Promise.resolve(new Blob()),
-            };
-            return Promise.resolve(new ResponseContext(200, headers, body));
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(mockDataCenters)));
         });
 
         return await getFunction();
@@ -120,40 +110,10 @@ describe('DataCentersApi', () => {
         expect(postMock).toHaveBeenCalled();
     });
 
-    const extendJsonString = (str: string, data: object) => {
-        const asJson = JSON.parse(str);
-        return JSON.stringify({ ...asJson, ...data });
-    };
-
     it('should modify request and response in middleware', async () => {
-        const sendSpy = jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send');
         const preParams = { providerName: 'Test Provider' };
         const postParams = { locationId: 42 };
 
-        const preMock = jest.fn((ctx) => {
-            ctx.body = preParams;
-            return Promise.resolve(ctx);
-        });
-        const postMock = jest.fn((rsp) => {
-            return rsp.body.text().then((bodyText: any) => {
-                rsp.body = {
-                    text: async () => extendJsonString(bodyText, postParams),
-                };
-                return rsp;
-            });
-        });
-
-        const apiWithMiddleware = new DataCentersApi(
-            createConfiguration({ middleware: [{ pre: preMock, post: postMock }] })
-        );
-
-        const response = await apiWithMiddleware.getDataCenter(dataCenterId);
-
-        expect(preMock).toHaveBeenCalled();
-        expect(postMock).toHaveBeenCalled();
-        expect(response).toEqual({ ...mockDataCenter, ...postParams });
-
-        const callArgs = sendSpy.mock.calls[0][0];
-        expect(callArgs.getBody()).toEqual(preParams);
+        await testMiddleware(DataCentersApi, 'getDataCenter', mockDataCenter, preParams, postParams);
     });
 });
