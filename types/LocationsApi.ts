@@ -2,7 +2,6 @@ import { LocationsApiRequestFactory, LocationsApiResponseProcessor } from '../ap
 import { Configuration } from '../configuration';
 import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
 import { Location } from '../models/Location';
-import './promiseMap';
 
 export class LocationsApi {
     private requestFactory: LocationsApiRequestFactory;
@@ -29,18 +28,18 @@ export class LocationsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getLocation(locationId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getLocationWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -63,18 +62,18 @@ export class LocationsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getLocations(name, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getLocationsWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
