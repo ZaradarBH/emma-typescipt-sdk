@@ -1,7 +1,7 @@
 import { LocationsApi } from '../LocationsApi';
 import { createConfiguration } from '../../configuration';
 import { IsomorphicFetchHttpLibrary, ResponseContext } from '../../http/http';
-import { testMiddleware, buildResponseBody, testApiHttpInfo } from './utils';
+import { testMiddleware, buildResponseBody, testApiHttpInfo } from '../utils/testHelper';
 
 describe('LocationsApi', () => {
     let locationsApi = new LocationsApi(createConfiguration());

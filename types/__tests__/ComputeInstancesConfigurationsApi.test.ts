@@ -2,7 +2,7 @@ import { ComputeInstancesConfigurationsApi } from '../ComputeInstancesConfigurat
 import { createConfiguration } from '../../configuration';
 import { IsomorphicFetchHttpLibrary } from '../../http/isomorphic-fetch';
 import { ResponseContext } from '../../http/http';
-import { testMiddleware, buildResponseBody, testApiHttpInfo } from './utils';
+import { testMiddleware, buildResponseBody, testApiHttpInfo } from '../utils/testHelper';
 
 describe('ComputeInstancesConfigurationsApi', () => {
     const api = new ComputeInstancesConfigurationsApi(createConfiguration());

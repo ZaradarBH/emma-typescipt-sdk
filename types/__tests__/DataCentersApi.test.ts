@@ -3,7 +3,7 @@ import { createConfiguration } from '../../configuration';
 import { DataCenter } from '../../models/DataCenter';
 import { IsomorphicFetchHttpLibrary } from '../../http/isomorphic-fetch';
 import { ResponseContext } from '../../http/http';
-import { testMiddleware, buildResponseBody, testApiHttpInfo } from './utils';
+import { testMiddleware, buildResponseBody, testApiHttpInfo } from '../utils/testHelper';
 
 describe('DataCentersApi', () => {
     const api = new DataCentersApi(createConfiguration());
