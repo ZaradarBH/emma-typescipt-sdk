@@ -1,8 +1,7 @@
 import { ProvidersApiRequestFactory, ProvidersApiResponseProcessor } from '../apis/ProvidersApi';
 import { Configuration } from '../configuration';
-import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
+import { HttpInfo } from '../http/http';
 import { Provider } from '../models/Provider';
-import './promiseMap';
 
 export class ProvidersApi {
     private requestFactory: ProvidersApiRequestFactory;
@@ -29,18 +28,18 @@ export class ProvidersApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getProvider(providerId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getProviderWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -66,18 +65,18 @@ export class ProvidersApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getProviders(providerName, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getProvidersWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
