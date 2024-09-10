@@ -1,11 +1,10 @@
 import { SecurityGroupsApiRequestFactory, SecurityGroupsApiResponseProcessor } from '../apis/SecurityGroupsApi';
 import { Configuration } from '../configuration';
-import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
+import { HttpInfo } from '../http/http';
 import { SecurityGroup } from '../models/SecurityGroup';
 import { SecurityGroupRequest } from '../models/SecurityGroupRequest';
 import { SecurityGroupInstanceAdd } from '../models/SecurityGroupInstanceAdd';
 import { Vm } from '../models/Vm';
-import './promiseMap';
 
 export class SecurityGroupsApi {
     private requestFactory: SecurityGroupsApiRequestFactory;
@@ -35,18 +34,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getSecurityGroup(securityGroupId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getSecurityGroupWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -67,18 +66,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getSecurityGroups(_options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getSecurityGroupsWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -102,18 +101,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.securityGroupCreate(securityGroupRequest, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.securityGroupCreateWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -144,18 +143,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.securityGroupDelete(securityGroupId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.securityGroupDeleteWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -187,18 +186,18 @@ export class SecurityGroupsApi {
             _options
         );
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.securityGroupInstanceAddWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -231,18 +230,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.securityGroupInstances(securityGroupId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.securityGroupInstancesWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -272,18 +271,18 @@ export class SecurityGroupsApi {
         // build promise chain
         let middlewarePre = this.requestFactory.securityGroupUpdate(securityGroupId, securityGroupRequest, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx) => this.configuration.httpApi.send(ctx))
+            .then((response) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.securityGroupUpdateWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
