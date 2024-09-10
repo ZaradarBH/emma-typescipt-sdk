@@ -5,7 +5,6 @@ import { SshKey } from '../models/SshKey';
 import { SshKeyUpdate } from '../models/SshKeyUpdate';
 import { SshKeysCreateImportRequest } from '../models/SshKeysCreateImportRequest';
 import { SshKeysCreateImport201Response } from '../models/SshKeysCreateImport201Response';
-import './promiseMap';
 
 export class SSHKeysApi {
     private requestFactory: SSHKeysApiRequestFactory;
@@ -32,18 +31,18 @@ export class SSHKeysApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getSshKey(sshKeyId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getSshKeyWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -66,18 +65,18 @@ export class SSHKeysApi {
         // build promise chain
         let middlewarePre = this.requestFactory.sshKeyDelete(sshKeyId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.sshKeyDeleteWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -105,18 +104,18 @@ export class SSHKeysApi {
         // build promise chain
         let middlewarePre = this.requestFactory.sshKeyUpdate(sshKeyId, sshKeyUpdate, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.sshKeyUpdateWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -138,18 +137,18 @@ export class SSHKeysApi {
         // build promise chain
         let middlewarePre = this.requestFactory.sshKeys(_options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.sshKeysWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -173,18 +172,18 @@ export class SSHKeysApi {
         // build promise chain
         let middlewarePre = this.requestFactory.sshKeysCreateImport(sshKeysCreateImportRequest, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.sshKeysCreateImportWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**

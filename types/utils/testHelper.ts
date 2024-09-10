@@ -11,10 +11,10 @@ export const buildResponseBody = (data: Object) => ({
     binary: () => Promise.resolve(new Blob()),
 });
 
-export const testApiHttpInfo = async (getWithHttp: Function, testBody: object) => {
+export const testApiHttpInfo = async (getWithHttp: Function, testBody: object, status: number = 200) => {
     const response = await getWithHttp();
     expect(response).toBeDefined();
-    expect(response.httpStatusCode).toBe(200);
+    expect(response.httpStatusCode).toBe(status);
     const bodyText = await response.body.text();
     expect(bodyText).toEqual(JSON.stringify(testBody));
 };
