@@ -4,7 +4,6 @@ import { HttpInfo, RequestContext, ResponseContext } from '../http/http';
 import { Vm } from '../models/Vm';
 import { VmActionsRequest } from '../models/VmActionsRequest';
 import { VmCreate } from '../models/VmCreate';
-import './promiseMap';
 
 export class VirtualMachinesApi {
     private requestFactory: VirtualMachinesApiRequestFactory;
@@ -31,18 +30,18 @@ export class VirtualMachinesApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getVm(vmId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getVmWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -63,18 +62,18 @@ export class VirtualMachinesApi {
         // build promise chain
         let middlewarePre = this.requestFactory.getVms(_options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.getVmsWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -100,18 +99,18 @@ export class VirtualMachinesApi {
         // build promise chain
         let middlewarePre = this.requestFactory.vmActions(vmId, vmActionsRequest, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.vmActionsWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -135,18 +134,18 @@ export class VirtualMachinesApi {
         // build promise chain
         let middlewarePre = this.requestFactory.vmCreate(vmCreate, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.vmCreateWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
@@ -169,18 +168,18 @@ export class VirtualMachinesApi {
         // build promise chain
         let middlewarePre = this.requestFactory.vmDelete(vmId, _options);
         for (let middleware of this.configuration.middleware) {
-            middlewarePre = middlewarePre.then(promiseMap((ctx: RequestContext) => middleware.pre(ctx)));
+            middlewarePre = middlewarePre.then((ctx: RequestContext) => middleware.pre(ctx));
         }
 
-        return middlewarePre.then(promiseMap((ctx: RequestContext) => this.configuration.httpApi.send(ctx))).then(
-            promiseMap((response: ResponseContext) => {
+        return middlewarePre
+            .then((ctx: RequestContext) => this.configuration.httpApi.send(ctx))
+            .then((response: ResponseContext) => {
                 let middlewarePost = Promise.resolve(response);
                 for (let middleware of this.configuration.middleware) {
-                    middlewarePost = middlewarePost.then(promiseMap((rsp: ResponseContext) => middleware.post(rsp)));
+                    middlewarePost = middlewarePost.then((rsp: ResponseContext) => middleware.post(rsp));
                 }
                 return middlewarePost.then((rsp) => this.responseProcessor.vmDeleteWithHttpInfo(rsp));
-            })
-        );
+            });
     }
 
     /**
