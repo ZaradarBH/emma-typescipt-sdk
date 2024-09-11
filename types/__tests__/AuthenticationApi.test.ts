@@ -1,67 +1,56 @@
 import { AuthenticationApi } from '../AuthenticationApi';
-import { Configuration, createConfiguration } from '../../configuration';
+import { createConfiguration } from '../../configuration';
+import { IsomorphicFetchHttpLibrary, ResponseContext } from '../../http/http';
 import { Credentials } from '../../models/Credentials';
 import { Token } from '../../models/Token';
-import { HttpInfo, HttpMethod, RequestContext, ResponseContext } from '../../http/http';
+import { RefreshToken } from '../../models/RefreshToken';
+import { buildResponseBody, testApiHttpInfo } from '../utils/testHelper';
 
 describe('AuthenticationApi', () => {
     let api: AuthenticationApi;
-    let configuration: Configuration;
+    const headers = { 'content-type': 'application/json' };
+    const credentials: Credentials = { clientId: 'test-client-id', clientSecret: 'test-client-secret' };
+    const refreshToken: RefreshToken = { refreshToken: 'test-refresh-token' };
+    const token: Token = { accessToken: 'test-access-token', refreshToken: 'test-refresh-token' };
+    const newToken: Token = { accessToken: 'new-access-token', refreshToken: 'new-refresh-token' };
 
     beforeEach(() => {
-        configuration = createConfiguration();
-        api = new AuthenticationApi(configuration);
+        api = new AuthenticationApi(createConfiguration());
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('should issue a token', async () => {
-        const credentials: Credentials = { clientId: 'test-client-id', clientSecret: 'test-client-secret' };
-        const token: Token = { accessToken: 'test-access-token', refreshToken: 'test-refresh-token' };
-
-        jest.spyOn(api['requestFactory'], 'issueToken').mockReturnValue(
-            Promise.resolve(new RequestContext('https://example.com', HttpMethod.GET))
-        );
-        jest.spyOn(api['responseProcessor'], 'issueTokenWithHttpInfo').mockReturnValue(
-            Promise.resolve({ data: token } as HttpInfo<Token>)
-        );
+        jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(token)));
+        });
 
         const result = await api.issueToken(credentials);
         expect(result).toEqual(token);
     });
 
-    it('should refresh a token', async () => {
-        const refreshToken = { refreshToken: 'test-refresh-token' };
-        const token: Token = { accessToken: 'new-access-token', refreshToken: 'new-refresh-token' };
+    it('should issue a token with http info', async () => {
+        jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(token)));
+        });
 
-        jest.spyOn(api['requestFactory'], 'refreshToken').mockReturnValue(
-            Promise.resolve(new RequestContext('https://example.com', HttpMethod.GET))
-        );
-        jest.spyOn(api['responseProcessor'], 'refreshTokenWithHttpInfo').mockReturnValue(
-            Promise.resolve({ data: token } as HttpInfo<Token>)
-        );
-
-        const result = await api.refreshToken(refreshToken);
-        expect(result).toEqual(token);
+        await testApiHttpInfo(() => api.issueTokenWithHttpInfo(credentials), token);
     });
 
-    it('should refresh a token with HttpInfo', async () => {
-        const refreshToken = { refreshToken: 'test-refresh-token' };
-        const token: Token = { accessToken: 'new-access-token', refreshToken: 'new-refresh-token' };
-        const httpInfo = { data: token };
+    it('should refresh a token', async () => {
+        jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(newToken)));
+        });
 
-        jest.spyOn(api['requestFactory'], 'refreshToken').mockReturnValue(
-            Promise.resolve(new RequestContext('https://example.com', HttpMethod.GET))
-        );
-        jest.spyOn(api['configuration'].httpApi, 'send').mockReturnValue(
-            Promise.resolve(
-                new ResponseContext(
-                    200,
-                    { 'content-type': 'application/json' },
-                    { text: async () => JSON.stringify(token), binary: async () => new Blob() }
-                )
-            )
-        );
+        const result = await api.refreshToken(refreshToken);
+        expect(result).toEqual(newToken);
+    });
 
-        const result = await api.refreshTokenWithHttpInfo(refreshToken);
-        expect(result.data).toEqual(httpInfo.data);
+    it('should refresh a token with http info', async () => {
+        jest.spyOn(IsomorphicFetchHttpLibrary.prototype, 'send').mockImplementation(() => {
+            return Promise.resolve(new ResponseContext(200, headers, buildResponseBody(newToken)));
+        });
+
+        await testApiHttpInfo(() => api.refreshTokenWithHttpInfo(refreshToken), newToken);
     });
 });
