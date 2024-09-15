@@ -19,6 +19,8 @@ import { BadRequestError } from '../model/badRequestError';
 import { ForbiddenError } from '../model/forbiddenError';
 import { NotFoundError } from '../model/notFoundError';
 import { SshKey } from '../model/sshKey';
+import { SshKeyCreate } from '../model/sshKeyCreate';
+import { SshKeyImport } from '../model/sshKeyImport';
 import { SshKeyUpdate } from '../model/sshKeyUpdate';
 import { SshKeysCreateImport201Response } from '../model/sshKeysCreateImport201Response';
 import { SshKeysCreateImportRequest } from '../model/sshKeysCreateImportRequest';
@@ -410,7 +412,7 @@ export class SSHKeysApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: (sshKeysCreateImportRequest?.key && sshKeysCreateImportRequest?.key.length > 0) ? ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeysImport") : ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeyCreate")
+            body: (sshKeysCreateImportRequest?.key && sshKeysCreateImportRequest?.key.length > 0) ? ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeyImport") as SshKeyImport : ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeyCreate") as SshKeyCreate
         };
 
         let authenticationPromise = Promise.resolve();
