@@ -410,7 +410,7 @@ export class SSHKeysApi {
             uri: localVarPath,
             useQuerystring: this._useQuerystring,
             json: true,
-            body: ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeysCreateImportRequest")
+            body: (sshKeysCreateImportRequest?.key && sshKeysCreateImportRequest?.key.length > 0) ? ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeysImport") : ObjectSerializer.serialize(sshKeysCreateImportRequest, "SshKeyCreate")
         };
 
         let authenticationPromise = Promise.resolve();
