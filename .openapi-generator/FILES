@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 api.ts
 api/apis.ts
 api/authenticationApi.ts
@@ -124,5 +123,3 @@ model/vmShutdown.ts
 model/vmStart.ts
 model/vmSubnetwork.ts
 model/vmTransfer.ts
-package.json
-tsconfig.json
